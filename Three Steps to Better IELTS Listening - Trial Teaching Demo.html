@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<!-- saved from url=(0079)file:///C:/Users/99378/Downloads/ielts_listening_demo_with_learner_profile.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Three Steps to Better IELTS Listening - Trial Teaching Demo</title>
+  <style>
+    :root {
+      --primary-navy: #0f2744;
+      --secondary-blue: #2563eb;
+      --accent-blue: #38bdf8;
+      --soft-blue: #e0f2fe;
+      --accent-orange: #f97316;
+      --bg-slate: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --success-green: #10b981;
+      --success-bg: #ecfdf5;
+      --error-red: #ef4444;
+      --border-color: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #0b1523;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 12px;
+    }
+
+    /* 16:9 Presentation Stage */
+    .presentation-container {
+      width: 100%;
+      max-width: 1200px;
+      aspect-ratio: 16 / 9;
+      background: var(--bg-slate);
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    @media (max-aspect-ratio: 16/9) {
+      .presentation-container {
+        aspect-ratio: auto;
+        min-height: 94vh;
+      }
+    }
+
+    /* Top Progress Bar & Header */
+    header {
+      background: var(--primary-navy);
+      color: #ffffff;
+      padding: 12px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 10;
+    }
+
+    .header-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+    }
+
+    .header-step {
+      font-weight: 700;
+      color: var(--accent-blue);
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-stage {
+      background: rgba(56, 189, 248, 0.2);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+    }
+
+    .header-meta {
+      display: flex;
+      gap: 20px;
+      font-weight: 500;
+      color: #94a3b8;
+    }
+
+    .header-meta span strong {
+      color: #f1f5f9;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 14.28%;
+      background: linear-gradient(90deg, var(--accent-blue), var(--accent-orange));
+      transition: width 0.4s ease;
+    }
+
+    /* Main Slides Workspace */
+    main {
+      flex: 1;
+      position: relative;
+      overflow-y: auto;
+      padding: 24px 44px 84px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide {
+      display: none;
+      height: 100%;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .slide-header {
+      margin-bottom: 16px;
+    }
+
+    .slide-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slide-subtitle {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Action Buttons */
+    .btn {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      padding: 9px 18px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--secondary-blue);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: var(--soft-blue);
+      color: var(--secondary-blue);
+    }
+    .btn-secondary:hover {
+      background: #bae6fd;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--secondary-blue);
+      color: var(--secondary-blue);
+    }
+    .btn-outline:hover {
+      background: var(--soft-blue);
+    }
+
+    .btn-web {
+      background: #eff6ff;
+      border: 1.5px solid var(--accent-blue);
+      color: #0369a1;
+    }
+    .btn-web:hover {
+      background: #e0f2fe;
+      border-color: var(--secondary-blue);
+      color: var(--secondary-blue);
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 0.84rem;
+      border-radius: 6px;
+    }
+
+    /* Cards & Grids */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin: 14px 0;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      border: 1.5px solid #e2e8f0;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.25s ease;
+    }
+
+    .card:hover {
+      border-color: var(--accent-blue);
+      box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.06);
+    }
+
+    .card-icon {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--primary-navy);
+    }
+
+    /* Slide 1: Learner Profile Styles */
+    .profile-banner-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 18px;
+      margin-top: 6px;
+    }
+
+    .profile-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px 22px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .score-target-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      padding: 14px 18px;
+      border-radius: 10px;
+    }
+
+    .score-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .score-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .score-val {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--primary-navy);
+    }
+
+    .score-arrow {
+      font-size: 1.5rem;
+      color: var(--accent-orange);
+      font-weight: bold;
+    }
+
+    .problem-box {
+      background: #fef2f2;
+      border-left: 4px solid var(--error-red);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #991b1b;
+    }
+
+    .solution-box {
+      background: #f0fdf4;
+      border-left: 4px solid var(--success-green);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: #166534;
+    }
+
+    /* Feedback Banners */
+    .banner-box {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 14px 18px;
+      border-left: 5px solid var(--secondary-blue);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      margin-top: 12px;
+    }
+
+    .banner-success {
+      border-left-color: var(--success-green);
+      background: var(--success-bg);
+      color: #065f46;
+    }
+
+    /* Gap-fill List */
+    .question-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 10px 0;
+    }
+
+    .q-item {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    .q-text {
+      flex: 1;
+    }
+
+    .gap-blank {
+      display: inline-block;
+      min-width: 105px;
+      border-bottom: 2px dashed #64748b;
+      margin: 0 4px;
+      text-align: center;
+      color: var(--secondary-blue);
+      font-weight: 700;
+    }
+
+    .q-hint {
+      margin-left: 16px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--accent-orange);
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      padding: 4px 12px;
+      border-radius: 6px;
+      display: none;
+    }
+
+    /* Grammar Rules Grid */
+    .grammar-tip-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .grammar-pill {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 8px 12px;
+      text-align: center;
+      font-weight: 600;
+      color: var(--secondary-blue);
+      font-size: 0.92rem;
+    }
+
+    /* Audio Player */
+    .audio-card {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin: 8px 0 14px 0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .audio-progress-bar {
+      flex: 1;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .audio-progress-active {
+      height: 100%;
+      width: 0%;
+      background: var(--secondary-blue);
+      transition: width 0.15s linear;
+    }
+
+    .audio-time {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      width: 90px;
+    }
+
+    .transcript-box {
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      border-left: 4px solid var(--secondary-blue);
+      margin-top: 12px;
+      max-height: 170px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .transcript-box p {
+      margin-bottom: 5px;
+    }
+
+    /* Check Answers & Explanations */
+    .answer-tag {
+      font-weight: 700;
+      color: var(--secondary-blue);
+      padding: 2px 6px;
+      border-bottom: 2px solid var(--secondary-blue);
+    }
+
+    .explanation-item {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* Slide 6: Connect and Sort */
+    .connect-card {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 10px 0;
+      border: 1.5px solid #e2e8f0;
+    }
+
+    .pair-col {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      background: #f8fafc;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border: 1px solid #e2e8f0;
+    }
+
+    .connect-arrow {
+      padding: 0 16px;
+      font-size: 1.5rem;
+      color: var(--accent-orange);
+      font-weight: bold;
+    }
+
+    .highlight-match {
+      background: #fef08a !important;
+      color: #854d0e !important;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .sorting-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .sort-box {
+      background: #ffffff;
+      border: 2px dashed #94a3b8;
+      border-radius: 10px;
+      padding: 12px;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      transition: border-color 0.2s ease;
+    }
+
+    .sort-box-header {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--primary-navy);
+      margin-bottom: 4px;
+    }
+
+    .drag-item {
+      background: var(--soft-blue);
+      border: 1px solid #7dd3fc;
+      color: #0369a1;
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease;
+    }
+
+    .drag-item:hover {
+      transform: scale(1.03);
+    }
+
+    .pool-items {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 8px 0;
+    }
+
+    /* Slide 7: Pillar Cards & Quiz */
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin: 14px 0;
+    }
+
+    .pillar-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 18px 16px;
+      border-top: 5px solid var(--secondary-blue);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pillar-num {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--accent-orange);
+      line-height: 1;
+    }
+
+    .pillar-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary-navy);
+    }
+
+    .pillar-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .quiz-options {
+      display: flex;
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .quiz-btn {
+      flex: 1;
+      padding: 12px;
+      font-weight: 700;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .quiz-btn:hover {
+      border-color: var(--secondary-blue);
+      background: #f0f9ff;
+    }
+
+    .quiz-correct {
+      background: var(--success-bg) !important;
+      border-color: var(--success-green) !important;
+      color: #065f46 !important;
+    }
+
+    .quiz-incorrect {
+      background: #fef2f2 !important;
+      border-color: var(--error-red) !important;
+      color: #991b1b !important;
+    }
+
+    /* Navigation Dock */
+    footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      padding: 0 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 20;
+    }
+
+    .nav-btn-group {
+      display: flex;
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="presentation-container">
+    <!-- Header -->
+    <header>
+      <div class="header-info">
+        <div class="header-step">
+          <span class="badge-stage" id="stageBadge">Final Summary</span>
+          <span id="topicTitle">Three Steps to Better IELTS Listening</span>
+        </div>
+        <div class="header-meta">
+          <span>Time: <strong id="timeIndicator">8:30–10:00</strong></span>
+          <span>Slide: <strong id="slideNum">7 / 7</strong></span>
+        </div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width: 100%;"></div>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main>
+      <!-- SLIDE 1: Learner Profile -->
+      <section class="slide" id="page-1">
+        <div class="slide-header">
+          <h1 class="slide-title">Learner Profile &amp; Pedagogical Objective</h1>
+          <p class="slide-subtitle">Diagnostic insight and targeted listening strategy for aspiring international students.</p>
+        </div>
+
+        <div class="profile-banner-grid">
+          <!-- Left Column: Student Demographic & Score Gap -->
+          <div class="profile-card">
+            <div>
+              <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--secondary-blue); letter-spacing: 0.5px;">Target Cohort</span>
+              <h3 style="font-size: 1.25rem; color: var(--primary-navy); margin-top: 2px;">Grade 10 Students (Study Abroad Track)</h3>
+              <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;">Preparing for international high school curriculum and foundation university requirements.</p>
+            </div>
+
+            <div class="score-target-row">
+              <div class="score-badge">
+                <span class="score-label">Current Level</span>
+                <span class="score-val" style="color: var(--error-red);">4.5 – 5.0</span>
+              </div>
+              <div class="score-arrow">➜</div>
+              <div class="score-badge">
+                <span class="score-label">Target Score</span>
+                <span class="score-val" style="color: var(--success-green);">6.0 – 6.5</span>
+              </div>
+            </div>
+
+            <div>
+              <span style="font-weight: 700; font-size: 0.88rem; color: var(--primary-navy);">Core Learning Challenge:</span>
+              <div class="problem-box" style="margin-top: 6px;">
+                <strong>Key Bottleneck:</strong> Students tend to listen <em>word-by-word</em> and choose answers based on familiar keywords without anticipating grammar or filtering negative qualifiers.
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Instructional Strategy & Scaffold -->
+          <div class="profile-card">
+            <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--accent-orange); letter-spacing: 0.5px;">Instructional Solution</span>
+            <h3 style="font-size: 1.25rem; color: var(--primary-navy); margin-top: -6px;">The 3-Step Scaffolding Framework</h3>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div class="solution-box">
+                <strong>1. Predict:</strong> Reduce real-time cognitive load by pre-identifying word class (adverb vs noun) and semantic constraints.
+              </div>
+              <div class="solution-box" style="border-left-color: var(--secondary-blue); background: #eff6ff; color: #1e40af;">
+                <strong>2. Listen:</strong> Move away from surface-level word matching toward key information filtering and paraphrase tracking.
+              </div>
+              <div class="solution-box" style="border-left-color: var(--accent-orange); background: #fff7ed; color: #9a3412;">
+                <strong>3. Check:</strong> Validate grammatical correctness, singular/plural agreement, and negative distractor traps.
+              </div>
+            </div>
+
+            <div style="font-size: 0.86rem; color: var(--text-muted); background: #f8fafc; padding: 10px 14px; border-radius: 8px; border: 1px dashed #cbd5e1;">
+              💡 <strong>Lesson Goal:</strong> Empower students to listen selectively for meaning rather than getting lost in every word.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 2: Warm-up -->
+      <section class="slide" id="page-2">
+        <div class="slide-header">
+          <h1 class="slide-title">What should you prepare for a job interview?</h1>
+          <p class="slide-subtitle">Activate your background knowledge before you listen.</p>
+        </div>
+
+        <div class="grid-4">
+          <div class="card">
+            <div class="card-icon">👔</div>
+            <div class="card-title">A smart suit</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">📜</div>
+            <div class="card-title">Exam certificates</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🛂</div>
+            <div class="card-title">A passport</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">👕</div>
+            <div class="card-title">Casual clothes</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px;">
+          <h3 style="font-size: 1.15rem; color: var(--primary-navy); margin-bottom: 12px;">
+            Which things might you need for an interview?
+          </h3>
+          <button class="btn btn-primary" onclick="toggleAnswer(&#39;warmup-ans&#39;)">Show Suggested Answers</button>
+          <div id="warmup-ans" class="banner-box banner-success" style="display: block; margin-top: 12px;">
+            <strong>Possible answers:</strong> A smart suit and a passport are typically required or recommended for verification and professional presentation.
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 3: Step 1 Predict -->
+      <section class="slide" id="page-3">
+        <div class="slide-header">
+          <h1 class="slide-title">Step 1: Predict the Answer Type</h1>
+          <p class="slide-subtitle">Look at the words around each gap to anticipate the grammatical category.</p>
+        </div>
+
+        <div class="question-list">
+          <div class="q-item">
+            <span class="q-text">1. The speaker should dress <span class="gap-blank" id="p1-blank">______</span>.</span>
+            <button class="btn btn-secondary btn-sm" onclick="showHint(&#39;h1&#39;)">Show Hint</button>
+            <span class="q-hint" id="h1" style="display: inline-block;">an adverb</span>
+          </div>
+          <div class="q-item">
+            <span class="q-text">2. She may borrow a <span class="gap-blank" id="p2-blank">______</span> from her mother.</span>
+            <button class="btn btn-secondary btn-sm" onclick="showHint(&#39;h2&#39;)">Show Hint</button>
+            <span class="q-hint" id="h2" style="display: inline-block;">a noun</span>
+          </div>
+          <div class="q-item">
+            <span class="q-text">3. She does not need to bring her exam <span class="gap-blank" id="p3-blank">______</span>.</span>
+            <button class="btn btn-secondary btn-sm" onclick="showHint(&#39;h3&#39;)">Show Hint</button>
+            <span class="q-hint" id="h3" style="display: inline-block;">a noun</span>
+          </div>
+          <div class="q-item">
+            <span class="q-text">4. She needs to bring her <span class="gap-blank" id="p4-blank">______</span>.</span>
+            <button class="btn btn-secondary btn-sm" onclick="showHint(&#39;h4&#39;)">Show Hint</button>
+            <span class="q-hint" id="h4" style="display: inline-block;">a document</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 8px;">
+          <button class="btn btn-outline btn-sm" onclick="revealAllHints()">Show All Hints</button>
+        </div>
+
+        <div style="margin-top: 14px;">
+          <p style="font-weight: 700; color: var(--primary-navy);">💡 Grammar clues to look for:</p>
+          <div class="grammar-tip-grid">
+            <div class="grammar-pill">dress + <em>adverb</em></div>
+            <div class="grammar-pill">borrow a + <em>noun</em></div>
+            <div class="grammar-pill">exam + <em>noun</em></div>
+            <div class="grammar-pill">my / her + <em>noun</em></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 4: Step 2 Listen -->
+      <section class="slide" id="page-4">
+        <div class="slide-header">
+          <h1 class="slide-title">Step 2: Listen for Key Information</h1>
+          <p class="slide-subtitle">You will hear the recording once. Do not try to understand every word — focus on the four answers.</p>
+        </div>
+
+        <!-- Integrated Audio Controls -->
+        <div class="audio-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <span style="font-weight: 700; color: var(--primary-navy);">🎧 IELTS Dialogue Audio (Full Transcript)</span>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <!-- External Website Direct Link Button -->
+              <a href="https://m.kekenet.com/lesson/18312-677208" target="_blank" rel="noopener noreferrer" class="btn btn-web btn-sm">
+                🌐 Open Audio Source (Kekenet)
+              </a>
+
+              <!-- Local File Picker -->
+              <input type="file" id="localAudioInput" accept="audio/*" style="display: none;" onchange="loadLocalAudio(event)">
+              <button class="btn btn-outline btn-sm" onclick="document.getElementById(&#39;localAudioInput&#39;).click()">
+                📁 Choose Local MP3
+              </button>
+              <span id="audioSourceLabel" style="font-size: 0.8rem; color: var(--text-muted);">Mode: Web Link / Full Speech</span>
+            </div>
+          </div>
+
+          <div class="audio-controls">
+            <button class="btn btn-primary" id="playBtn" onclick="togglePlay()">▶ Play Audio</button>
+            <div class="audio-progress-bar" id="audioBarContainer" onclick="seekAudio(event)">
+              <div class="audio-progress-active" id="audioProgress" style="width: 0%;"></div>
+            </div>
+            <div class="audio-time" id="audioTime">00:00 / 00:48</div>
+          </div>
+        </div>
+
+        <!-- Questions Reminder -->
+        <div style="background: #ffffff; padding: 12px 18px; border-radius: 10px; border: 1.5px solid #e2e8f0;">
+          <div style="font-weight: 700; margin-bottom: 4px; color: var(--primary-navy);">Targets while listening:</div>
+          <ol style="margin-left: 20px; color: var(--text-main); line-height: 1.65;">
+            <li>The speaker should dress ______.</li>
+            <li>She may borrow a ______ from her mother.</li>
+            <li>She does not need to bring her exam ______.</li>
+            <li>She needs to bring her ______.</li>
+          </ol>
+        </div>
+
+        <div style="margin-top: 12px; display: flex; gap: 12px;">
+          <button class="btn btn-secondary btn-sm" onclick="toggleAnswer(&#39;transcript-box&#39;)">📄 Toggle Transcript (Full Official Dialogue)</button>
+        </div>
+
+        <div id="transcript-box" class="transcript-box">
+          <p><strong>Speaker A:</strong> Do you want me to tell you anything about the registration process?</p>
+          <p><strong>Speaker B:</strong> Yes, please. I know you have to have an interview.</p>
+          <p><strong>Speaker A:</strong> The interview usually takes about an hour and you should arrange that about a week in advance.</p>
+          <p><strong>Speaker B:</strong> I suppose I should dress smartly if it's for office work – I can probably borrow a suit from Mum.</p>
+          <p><strong>Speaker A:</strong> Good idea. It's better to look too smart than too casual.</p>
+          <p><strong>Speaker B:</strong> Will I need to bring copies of my exam certificates or anything like that?</p>
+          <p><strong>Speaker A:</strong> No – they don't need to see those, I don't think.</p>
+          <p><strong>Speaker B:</strong> What about my passport?</p>
+          <p><strong>Speaker A:</strong> Oh yes – they will ask to see that.</p>
+          <p><strong>Speaker B:</strong> OK.</p>
+          <p><strong>Speaker A:</strong> I wouldn't get stressed about the interview though. It's just a chance for them to build a relationship with you – so they can try and match you to a job which you'll like.</p>
+          <p><strong>Speaker A:</strong> So there are questions about personality that they always ask candidates - fairly basic ones. And they probably won't ask anything too difficult like what your plans are for the future.</p>
+          <p><strong>Speaker B:</strong> Hope not.</p>
+        </div>
+      </section>
+
+      <!-- SLIDE 5: Check Answers -->
+      <section class="slide" id="page-5">
+        <div class="slide-header">
+          <h1 class="slide-title">Let’s Check the Answers</h1>
+          <p class="slide-subtitle">Evaluate your predictions and grammatical precision.</p>
+        </div>
+
+        <div class="question-list">
+          <div class="q-item">
+            <div>
+              1. The speaker should dress <span class="answer-tag" id="ans-1">smartly</span>.
+              <div class="explanation-item" id="exp-1" style="display: block;">✔ “dress” is followed by the adverb <strong>smartly</strong>.</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="revealAnswer(1, &#39;smartly&#39;)">Reveal Answer</button>
+          </div>
+
+          <div class="q-item">
+            <div>
+              2. She may borrow a <span class="answer-tag" id="ans-2">suit</span> from her mother.
+              <div class="explanation-item" id="exp-2" style="display: block;">✔ “a suit” fits the noun prediction.</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="revealAnswer(2, &#39;suit&#39;)">Reveal Answer</button>
+          </div>
+
+          <div class="q-item">
+            <div>
+              3. She does not need to bring her exam <span class="answer-tag" id="ans-3">certificates</span>.
+              <div class="explanation-item" id="exp-3" style="display: block;">✔ “exam certificates” are the official documents mentioned.</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="revealAnswer(3, &#39;certificates&#39;)">Reveal Answer</button>
+          </div>
+
+          <div class="q-item">
+            <div>
+              4. She needs to bring her <span class="answer-tag" id="ans-4">passport</span>.
+              <div class="explanation-item" id="exp-4" style="display: block;">✔ A passport is confirmed as mandatory.</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="revealAnswer(4, &#39;passport&#39;)">Reveal Answer</button>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; display: flex; gap: 12px; align-items: center;">
+          <button class="btn btn-primary btn-sm" onclick="revealAllAnswers()">Reveal All</button>
+          <button class="btn btn-outline btn-sm" onclick="toggleAnswer(&#39;why-box&#39;)">Why check this way?</button>
+        </div>
+
+        <div id="why-box" class="banner-box" style="display: block;">
+          <strong style="color: var(--secondary-blue);">Strategic Takeaway:</strong>
+          Good listeners do not only hear words. They also check grammar and meaning!
+        </div>
+      </section>
+
+      <!-- SLIDE 6: Step 3 Synonyms & Negative Info -->
+      <section class="slide" id="page-6">
+        <div class="slide-header">
+          <h1 class="slide-title">Step 3: Notice Meaning, Not Just Words</h1>
+          <p class="slide-subtitle">Watch out for pronouns, paraphrasing, and negative qualifiers.</p>
+        </div>
+
+        <!-- Paraphrase Matching Card -->
+        <div class="connect-card">
+          <div class="pair-col" id="col-question">
+            Question phrasing:<br>
+            <span id="hl-q1" class="highlight-match">bring copies</span> of my <span id="hl-q2" class="highlight-match">exam certificates</span>
+          </div>
+          <div class="connect-arrow">⟷</div>
+          <div class="pair-col" id="col-recording">
+            Audio transcript:<br>
+            they <span id="hl-r1" class="highlight-match">don't need to see</span> <span id="hl-r2" class="highlight-match">those</span>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+          <button class="btn btn-primary btn-sm" onclick="highlightConnections()">Show Connection</button>
+        </div>
+
+        <!-- Question Prompt -->
+        <div style="background: #ffffff; padding: 14px 20px; border-radius: 10px; border: 1.5px solid #e2e8f0; margin-bottom: 12px;">
+          <p style="font-weight: 700; color: var(--primary-navy); margin-bottom: 8px;">
+            Does the speaker need to bring the exam certificates?
+          </p>
+          <div style="display: flex; gap: 12px;">
+            <button class="btn btn-outline btn-sm" id="btn-cert-yes" onclick="answerCert(false)">Yes</button>
+            <button class="btn btn-outline btn-sm quiz-correct" id="btn-cert-no" onclick="answerCert(true)">No</button>
+          </div>
+          <div id="cert-feedback" style="display: block; margin-top: 10px; font-weight: 600; font-size: 0.95rem;"><span style="color: var(--success-green);">✔ Correct. “Those” refers to the exam certificates, and the speaker says they "don't need to see those".</span></div>
+        </div>
+
+        <!-- Sorting Task -->
+        <div style="background: #ffffff; padding: 14px 20px; border-radius: 10px; border: 1.5px solid #e2e8f0;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 700; color: var(--primary-navy);">Categorize: What does the speaker need to bring?</span>
+            <button class="btn btn-outline btn-sm" onclick="autoSolveSorting()">Show Sorting Solution</button>
+          </div>
+
+          <div class="pool-items" id="item-pool">
+            
+            
+          </div>
+
+          <div class="sorting-container">
+            <div class="sort-box" id="box-need" onclick="placeSelected(&#39;box-need&#39;)">
+              <span class="sort-box-header">✅ Need to bring</span>
+            <div class="drag-item" id="item-passport" onclick="moveItem(&#39;item-passport&#39;)" style="outline: none;">passport</div></div>
+            <div class="sort-box" id="box-noneed" onclick="placeSelected(&#39;box-noneed&#39;)">
+              <span class="sort-box-header">❌ Do not need to bring</span>
+            <div class="drag-item" id="item-certificates" onclick="moveItem(&#39;item-certificates&#39;)" style="outline: none;">exam certificates</div></div>
+          </div>
+        </div>
+
+        <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 10px;">
+          📌 IELTS often uses different words for the same idea.
+        </p>
+      </section>
+
+      <!-- SLIDE 7: Summary -->
+      <section class="slide active" id="page-7">
+        <div class="slide-header">
+          <h1 class="slide-title">Three Steps to Better IELTS Listening</h1>
+          <p class="slide-subtitle">Master these three strategies for every listening section.</p>
+        </div>
+
+        <div class="pillar-grid">
+          <div class="pillar-card">
+            <div class="pillar-num">1</div>
+            <div class="pillar-title">PREDICT</div>
+            <div class="pillar-desc">Predict the answer type and word class before listening.</div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-num">2</div>
+            <div class="pillar-title">LISTEN</div>
+            <div class="pillar-desc">Focus on key information, synonyms, and paraphrasing.</div>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-num">3</div>
+            <div class="pillar-title">CHECK</div>
+            <div class="pillar-desc">Check grammar, meaning, and negative information.</div>
+          </div>
+        </div>
+
+        <!-- Mini Quiz -->
+        <div style="background: #ffffff; padding: 16px 20px; border-radius: 12px; border: 1.5px solid #e2e8f0; margin-top: 8px;">
+          <p style="font-weight: 700; color: var(--primary-navy); font-size: 1.05rem;">
+            Quick Check: The speaker needs to bring:
+          </p>
+          <div class="quiz-options">
+            <button class="quiz-btn" id="q-opt-a" onclick="answerFinalQuiz(&#39;A&#39;)">A. exam certificates</button>
+            <button class="quiz-btn quiz-correct" id="q-opt-b" onclick="answerFinalQuiz(&#39;B&#39;)">B. a passport</button>
+            <button class="quiz-btn" id="q-opt-c" onclick="answerFinalQuiz(&#39;C&#39;)">C. a suit</button>
+          </div>
+          <div id="final-quiz-feedback" class="banner-box banner-success" style="display: block; margin-top: 10px;"><strong>Excellent!</strong> The answer is <strong>B: a passport</strong>. The speaker mentions they don't need exam certificates, and a suit is worn, not brought as a document.</div>
+        </div>
+
+        <div class="banner-box banner-success" style="margin-top: 12px; text-align: center;">
+          <h3 style="font-size: 1.1rem; margin-bottom: 2px;">🎯 Key Message</h3>
+          <p style="font-size: 1rem; font-weight: 600;">Good listeners do not catch every word. They listen for the information they need.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer Controls -->
+    <footer>
+      <div style="font-size: 0.85rem; color: var(--text-muted);">
+        Use keyboard <strong>← / →</strong> keys to navigate
+      </div>
+      <div class="nav-btn-group">
+        <button class="btn btn-outline" id="prevBtn" onclick="prevSlide()" style="opacity: 1;">Previous</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextSlide()">Finish</button>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    /* Slide Navigation State */
+    let currentSlideIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const stageBadge = document.getElementById('stageBadge');
+    const timeIndicator = document.getElementById('timeIndicator');
+    const slideNum = document.getElementById('slideNum');
+    const progressFill = document.getElementById('progressFill');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    const slideMeta = [
+      { name: "Learner Profile", time: "Overview" },
+      { name: "Warm-up", time: "0:00–1:00" },
+      { name: "Step 1: Predict", time: "1:00–2:30" },
+      { name: "Step 2: Listen", time: "2:30–4:00" },
+      { name: "Check Answers", time: "4:00–5:30" },
+      { name: "Step 3: Meaning", time: "5:30–8:30" },
+      { name: "Final Summary", time: "8:30–10:00" }
+    ];
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlideIndex);
+      });
+
+      const meta = slideMeta[currentSlideIndex];
+      stageBadge.textContent = meta.name;
+      timeIndicator.textContent = meta.time;
+      slideNum.textContent = `${currentSlideIndex + 1} / ${slides.length}`;
+      progressFill.style.width = `${((currentSlideIndex + 1) / slides.length) * 100}%`;
+
+      prevBtn.disabled = currentSlideIndex === 0;
+      prevBtn.style.opacity = currentSlideIndex === 0 ? "0.4" : "1";
+
+      if (currentSlideIndex === slides.length - 1) {
+        nextBtn.textContent = "Finish";
+      } else {
+        nextBtn.textContent = "Next";
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlideIndex < slides.length - 1) {
+        currentSlideIndex++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlideIndex > 0) {
+        currentSlideIndex--;
+        updateSlide();
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown') nextSlide();
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
+    });
+
+    /* General Toggle Tool */
+    function toggleAnswer(id) {
+      const el = document.getElementById(id);
+      el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'block' : 'none';
+    }
+
+    /* Hints */
+    function showHint(id) {
+      document.getElementById(id).style.display = 'inline-block';
+    }
+    function revealAllHints() {
+      ['h1', 'h2', 'h3', 'h4'].forEach(id => showHint(id));
+    }
+
+    /* Answers */
+    function revealAnswer(num, word) {
+      document.getElementById(`ans-${num}`).textContent = word;
+      document.getElementById(`exp-${num}`).style.display = 'block';
+    }
+    function revealAllAnswers() {
+      revealAnswer(1, 'smartly');
+      revealAnswer(2, 'suit');
+      revealAnswer(3, 'certificates');
+      revealAnswer(4, 'passport');
+    }
+
+    /* Paraphrase Highlighting */
+    function highlightConnections() {
+      document.getElementById('hl-q1').className = 'highlight-match';
+      document.getElementById('hl-r1').className = 'highlight-match';
+      document.getElementById('hl-q2').className = 'highlight-match';
+      document.getElementById('hl-r2').className = 'highlight-match';
+    }
+
+    function answerCert(isCorrect) {
+      const fb = document.getElementById('cert-feedback');
+      fb.style.display = 'block';
+      if (isCorrect) {
+        fb.innerHTML = `<span style="color: var(--success-green);">✔ Correct. “Those” refers to the exam certificates, and the speaker says they "don't need to see those".</span>`;
+        document.getElementById('btn-cert-no').classList.add('quiz-correct');
+        document.getElementById('btn-cert-yes').classList.remove('quiz-incorrect');
+      } else {
+        fb.innerHTML = `<span style="color: var(--error-red);">✖ Not quite. Pay attention to the negative marker: “No – they don't need to see those.”</span>`;
+        document.getElementById('btn-cert-yes').classList.add('quiz-incorrect');
+        document.getElementById('btn-cert-no').classList.remove('quiz-correct');
+      }
+    }
+
+    /* Sorting */
+    let selectedItem = null;
+    function moveItem(id) {
+      selectedItem = document.getElementById(id);
+      document.querySelectorAll('.drag-item').forEach(el => el.style.outline = 'none');
+      selectedItem.style.outline = '3px solid var(--accent-orange)';
+    }
+
+    function placeSelected(targetBoxId) {
+      if (!selectedItem) return;
+      document.getElementById(targetBoxId).appendChild(selectedItem);
+      selectedItem.style.outline = 'none';
+      selectedItem = null;
+    }
+
+    function autoSolveSorting() {
+      document.getElementById('box-need').appendChild(document.getElementById('item-passport'));
+      document.getElementById('box-noneed').appendChild(document.getElementById('item-certificates'));
+    }
+
+    /* Final Quiz */
+    function answerFinalQuiz(choice) {
+      const fb = document.getElementById('final-quiz-feedback');
+      fb.style.display = 'block';
+      const btns = {
+        'A': document.getElementById('q-opt-a'),
+        'B': document.getElementById('q-opt-b'),
+        'C': document.getElementById('q-opt-c')
+      };
+      Object.values(btns).forEach(b => {
+        b.classList.remove('quiz-correct', 'quiz-incorrect');
+      });
+
+      if (choice === 'B') {
+        btns['B'].classList.add('quiz-correct');
+        fb.className = 'banner-box banner-success';
+        fb.innerHTML = `<strong>Excellent!</strong> The answer is <strong>B: a passport</strong>. The speaker mentions they don't need exam certificates, and a suit is worn, not brought as a document.`;
+      } else {
+        btns[choice].classList.add('quiz-incorrect');
+        fb.className = 'banner-box';
+        fb.style.borderLeftColor = 'var(--error-red)';
+        fb.innerHTML = `<strong>Not quite.</strong> Listen carefully for what the speaker <em>really needs to bring</em> (passport), rather than what she doesn't need (certificates) or what she wears (suit).`;
+      }
+    }
+
+    /* Audio Management System */
+    let localAudio = null;
+    let isPlaying = false;
+    let syntheticTimer = null;
+    let syntheticSeconds = 0;
+    const totalDuration = 48;
+
+    const fullDialogueLines = [
+      "Do you want me to tell you anything about the registration process?",
+      "Yes, please. I know you have to have an interview.",
+      "The interview usually takes about an hour and you should arrange that about a week in advance.",
+      "I suppose I should dress smartly if it's for office work – I can probably borrow a suit from Mum.",
+      "Good idea. It's better to look too smart than too casual.",
+      "Will I need to bring copies of my exam certificates or anything like that?",
+      "No – they don't need to see those, I don't think.",
+      "What about my passport?",
+      "Oh yes – they will ask to see that.",
+      "OK.",
+      "I wouldn't get stressed about the interview though.",
+      "It's just a chance for them to build a relationship with you – so they can try and match you to a job which you'll like.",
+      "So there are questions about personality that they always ask candidates - fairly basic ones.",
+      "And they probably won't ask anything too difficult like what your plans are for the future.",
+      "Hope not."
+    ];
+    const fullDialogueText = fullDialogueLines.join(" ");
+
+    function loadLocalAudio(e) {
+      const file = e.target.files[0];
+      if (file) {
+        if (localAudio) {
+          localAudio.pause();
+        }
+        localAudio = new Audio(URL.createObjectURL(file));
+        document.getElementById('audioSourceLabel').textContent = `File: ${file.name}`;
+        bindAudioEvents();
+      }
+    }
+
+    function bindAudioEvents() {
+      if (!localAudio) return;
+      localAudio.onplay = () => {
+        isPlaying = true;
+        document.getElementById('playBtn').textContent = "❚❚ Pause";
+      };
+      localAudio.onpause = () => {
+        isPlaying = false;
+        document.getElementById('playBtn').textContent = "▶ Play Audio";
+      };
+      localAudio.ontimeupdate = () => {
+        const cur = localAudio.currentTime;
+        const dur = localAudio.duration || totalDuration;
+        document.getElementById('audioProgress').style.width = `${(cur / dur) * 100}%`;
+        document.getElementById('audioTime').textContent = `${formatTime(cur)} / ${formatTime(dur)}`;
+      };
+      localAudio.onended = () => {
+        isPlaying = false;
+        document.getElementById('playBtn').textContent = "▶ Play Audio";
+        document.getElementById('audioProgress').style.width = `0%`;
+      };
+    }
+
+    function togglePlay() {
+      if (localAudio && localAudio.src) {
+        if (isPlaying) {
+          localAudio.pause();
+        } else {
+          localAudio.play();
+        }
+        return;
+      }
+
+      if (!isPlaying) {
+        startSpeechSynthesis();
+      } else {
+        stopSpeechSynthesis();
+      }
+    }
+
+    function startSpeechSynthesis() {
+      isPlaying = true;
+      document.getElementById('playBtn').textContent = "❚❚ Pause";
+      
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(fullDialogueText);
+        utterance.lang = 'en-GB';
+        utterance.rate = 1.0;
+        
+        utterance.onend = () => {
+          stopSpeechSynthesis();
+        };
+        utterance.onerror = () => {
+          stopSpeechSynthesis();
+        };
+        window.speechSynthesis.speak(utterance);
+      }
+
+      syntheticSeconds = 0;
+      clearInterval(syntheticTimer);
+      syntheticTimer = setInterval(() => {
+        syntheticSeconds += 0.25;
+        const pct = Math.min(100, (syntheticSeconds / totalDuration) * 100);
+        document.getElementById('audioProgress').style.width = `${pct}%`;
+        document.getElementById('audioTime').textContent = `${formatTime(syntheticSeconds)} / ${formatTime(totalDuration)}`;
+
+        if (syntheticSeconds >= totalDuration) {
+          stopSpeechSynthesis();
+        }
+      }, 250);
+    }
+
+    function stopSpeechSynthesis() {
+      isPlaying = false;
+      document.getElementById('playBtn').textContent = "▶ Play Audio";
+      clearInterval(syntheticTimer);
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      document.getElementById('audioProgress').style.width = '0%';
+      document.getElementById('audioTime').textContent = `00:00 / 00:48`;
+    }
+
+    function seekAudio(e) {
+      const bar = document.getElementById('audioBarContainer');
+      const rect = bar.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const ratio = clickX / rect.width;
+
+      if (localAudio && localAudio.duration) {
+        localAudio.currentTime = ratio * localAudio.duration;
+      }
+    }
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    // Initialize UI on page load
+    updateSlide();
+  </script>
+
+</body></html>
