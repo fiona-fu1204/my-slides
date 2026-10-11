@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)file:///C:/Users/99378/Downloads/gemini-code-1789639586814.html -->
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restrictive Relative Clauses: who, which, that</title>
+  <style>
+    /* ============================================================
+       0. 明亮现代主题（清爽浅灰底色 + 白底卡片 + 高对比文字）
+       ============================================================ */
+    :root {
+      --bg-viewport: #e2e8f0;
+      --bg-stage: #f8fafc;
+      --bg-card: #ffffff;
+      --bg-card-sub: #f1f5f9;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --color-primary: #0284c7;
+      --color-primary-dark: #0369a1;
+      --color-accent-noun: #d97706;      /* 被修饰名词：暖橙色 */
+      --color-accent-pronoun: #0284c7;   /* 关系代词：明亮宝蓝 */
+      --color-clause-bg: #e0f2fe;        /* 定语从句底色：浅冰蓝 */
+      --color-success: #16a34a;
+      --color-error: #e11d48;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      background-color: var(--bg-viewport);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* 16:9 演示主画布容器 */
+    .deck-viewport {
+      width: 100vw;
+      height: 56.25vw; /* 16:9 比例 */
+      max-height: 100vh;
+      max-width: 177.78vh;
+      background-color: var(--bg-stage);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* 顶部导航与状态条 */
+    .top-bar {
+      height: 46px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      z-index: 10;
+    }
+
+    .progress-bar-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: #e2e8f0;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 11%;
+      background: linear-gradient(90deg, #38bdf8, #0284c7);
+      transition: width 0.3s ease;
+    }
+
+    .pill-badge {
+      background: #e0f2fe;
+      color: var(--color-primary-dark);
+      padding: 3px 12px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .time-badge {
+      background: #fef3c7;
+      color: #b45309;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+
+    /* 幻灯片展示区域 */
+    .slide-stage {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 24px 44px 18px 44px;
+      display: none;
+      flex-direction: column;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .slide-header {
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .slide-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slide-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* 语法高亮规范 */
+    .hl-noun {
+      color: var(--color-accent-noun);
+      font-weight: bold;
+      border-bottom: 2px solid var(--color-accent-noun);
+      padding-bottom: 1px;
+    }
+
+    .hl-pronoun {
+      color: var(--color-accent-pronoun);
+      font-weight: bold;
+      background: #e0f2fe;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .hl-clause {
+      background: var(--color-clause-bg);
+      border-left: 3px solid var(--color-accent-pronoun);
+      padding: 2px 8px;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .zh-hint {
+      font-size: 0.82rem;
+      color: #64748b;
+      display: block;
+      margin-top: 3px;
+      font-weight: normal;
+    }
+
+    /* 底部控制栏 */
+    .bottom-bar {
+      height: 48px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      z-index: 10;
+    }
+
+    .btn {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .btn-action {
+      background: #0284c7;
+      color: #ffffff;
+      border: none;
+      font-weight: 600;
+      padding: 7px 15px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-action:hover {
+      background: #0369a1;
+    }
+
+    .btn-action-outline {
+      background: #ffffff;
+      color: #0284c7;
+      border: 1.5px solid #0284c7;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 屏幕交互状态 */
+    .reveal-box {
+      display: none;
+    }
+    .reveal-box.show {
+      display: block;
+    }
+    .reveal-inline {
+      display: none;
+    }
+    .reveal-inline.show {
+      display: inline-flex;
+    }
+
+    /* ============================================================
+       PDF 打印专用样式引擎 (@media print)
+       ============================================================ */
+    @media print {
+      @page {
+        size: A4 landscape;
+        margin: 0;
+      }
+
+      body {
+        background-color: #ffffff !important;
+        overflow: visible !important;
+        display: block !important;
+        height: auto !important;
+        min-height: auto !important;
+      }
+
+      .deck-viewport {
+        width: 100% !important;
+        max-width: none !important;
+        height: auto !important;
+        max-height: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        display: block !important;
+        overflow: visible !important;
+      }
+
+      .top-bar, .bottom-bar, .progress-bar-container, .btn, .btn-action, .btn-action-outline {
+        display: none !important;
+      }
+
+      .slide-stage {
+        display: block !important;
+        position: static !important;
+        overflow: visible !important;
+      }
+
+      .slide {
+        display: flex !important;
+        opacity: 1 !important;
+        position: relative !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        page-break-after: always !important;
+        break-after: page !important;
+        box-sizing: border-box !important;
+        padding: 36px 48px !important;
+        background-color: #f8fafc !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .reveal-box {
+        display: block !important;
+      }
+      .reveal-inline {
+        display: inline-flex !important;
+      }
+      #s8Err1, #s8Err2 {
+        color: var(--color-error) !important;
+        text-decoration: line-through !important;
+      }
+      #s8Correct3 {
+        color: var(--color-success) !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="deck-viewport">
+
+  <!-- 顶部进度条 -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progressBar" style="width: 100%;"></div>
+  </div>
+  <div class="top-bar">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span class="pill-badge">🔍 Mission: Find the Mystery Target!</span>
+      <span id="slideCategory" style="font-size: 0.85rem; color: #475569; font-weight: 500;">Summary &amp; Homework</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <span class="time-badge" id="slideTime">⏱️ 1.0 Mins</span>
+      <span id="pageIndicator" style="font-weight: bold; color: #0f172a;">9 / 9</span>
+    </div>
+  </div>
+
+  <!-- 主舞台幻灯片 (共9页) -->
+  <div class="slide-stage">
+
+    <!-- SLIDE 1: 标题页 -->
+    <div class="slide" data-time="0.5 Mins" data-category="Stage 0: Introduction">
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+        <div style="font-size: 3.5rem; margin-bottom: 12px;">🔍 👩‍🎓 📚 📱</div>
+        <h1 style="font-size: 2.5rem; color: #0f172a; margin-bottom: 8px; font-weight: 800;">
+          Find the Mystery Person or Thing!
+        </h1>
+        <h2 style="font-size: 1.35rem; color: #0284c7; font-weight: 600; margin-bottom: 24px;">
+          Restrictive Relative Clauses: <span style="color: #d97706;">who, which and that</span> as subjects
+        </h2>
+        
+        <div style="display: flex; gap: 16px; margin-bottom: 28px;">
+          <div style="background: #ffffff; border: 1px solid var(--border-color); padding: 8px 18px; border-radius: 20px; font-size: 0.88rem; box-shadow: var(--shadow-sm);">
+            🏫 高一英语 (Senior 1)
+          </div>
+          <div style="background: #ffffff; border: 1px solid var(--border-color); padding: 8px 18px; border-radius: 20px; font-size: 0.88rem; box-shadow: var(--shadow-sm);">
+            ⏱️ 15-Minute Demo Lesson
+          </div>
+          <div style="background: #ffffff; border: 1px solid var(--border-color); padding: 8px 18px; border-radius: 20px; font-size: 0.88rem; box-shadow: var(--shadow-sm);">
+            🎯 核心目标：句子合并与精准指认
+          </div>
+        </div>
+
+        <div style="background: #ffffff; border: 1.5px dashed #0284c7; padding: 14px 28px; border-radius: 8px; max-width: 680px; box-shadow: var(--shadow-sm);">
+          <p style="font-size: 1.1rem; color: #0f172a; font-weight: 600;">
+            "Today, we are going to use <u>one sentence</u> to describe a person or a thing."
+          </p>
+          <span class="zh-hint" style="font-size: 0.88rem; margin-top: 4px;">今天，我们学习如何用一个句子，精准描述并锁定神秘人物或物品！</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: Task 1 - Mystery Guess -->
+    <div class="slide" data-time="1.5 Mins" data-category="Task 1: Mystery Guess">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">🕵️ Task 1: Mystery Guess</div>
+          <div class="slide-subtitle">Read the clues and find the mystery person &amp; thing | 读线索，猜猜他们是谁/是什么</div>
+        </div>
+        <div class="pill-badge">Step 1: Observation</div>
+      </div>
+
+      <div style="background: #ffffff; border-left: 4px solid #0284c7; padding: 8px 16px; border-radius: 6px; margin-bottom: 16px; font-size: 0.88rem; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+        <div>
+          <strong>Class Instructions:</strong> 1. Think for 10s &nbsp;|&nbsp; 2. Talk with your partner &nbsp;|&nbsp; 3. Make a guess!
+          <span class="zh-hint">先独立思考 ➔ 同桌轻声交流 ➔ 说出猜测</span>
+        </div>
+        <span style="color: #b45309; font-weight: bold; background: #fef3c7; padding: 3px 8px; border-radius: 4px;">⏳ 10s Thinking</span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1;">
+        <div style="background: #ffffff; border-radius: 8px; padding: 18px 22px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; flex-direction: column;">
+          <div style="font-size: 1.15rem; font-weight: bold; color: #d97706; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            👤 Clue A: Mystery Person
+          </div>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 1rem;">
+            <li style="padding-left: 12px; border-left: 2px solid #cbd5e1;">
+              • It is a <strong>person</strong>. <span class="zh-hint">这是一个人物。</span>
+            </li>
+            <li style="padding-left: 12px; border-left: 2px solid #0284c7;">
+              • It is someone <span class="hl-pronoun">who</span> likes music. <span class="zh-hint">这是某个喜欢音乐的人。</span>
+            </li>
+            <li style="padding-left: 12px; border-left: 2px solid #0284c7;">
+              • It is someone <span class="hl-pronoun">who</span> can speak English well. <span class="zh-hint">这是某个英语讲得很好的人。</span>
+            </li>
+          </ul>
+          <div style="margin-top: auto; padding-top: 12px; font-size: 0.85rem; color: var(--text-muted); border-top: 1px dashed #e2e8f0;">
+            ❓ <em>Who is this? (A singer? An English teacher? A classmate?)</em>
+          </div>
+        </div>
+
+        <div style="background: #ffffff; border-radius: 8px; padding: 18px 22px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; flex-direction: column;">
+          <div style="font-size: 1.15rem; font-weight: bold; color: #0284c7; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            📦 Clue B: Mystery Thing
+          </div>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 1rem;">
+            <li style="padding-left: 12px; border-left: 2px solid #cbd5e1;">
+              • It is a <strong>thing</strong>. <span class="zh-hint">这是一个物品。</span>
+            </li>
+            <li style="padding-left: 12px; border-left: 2px solid #d97706;">
+              • It is something <span class="hl-pronoun">that</span> is useful. <span class="zh-hint">这是某种很有用的东西。</span>
+            </li>
+            <li style="padding-left: 12px; border-left: 2px solid #d97706;">
+              • It is something <span class="hl-pronoun">which</span> many students use every day. <span class="zh-hint">这是许多学生每天都在使用的东西。</span>
+            </li>
+          </ul>
+          <div style="margin-top: auto; padding-top: 12px; font-size: 0.85rem; color: var(--text-muted); border-top: 1px dashed #e2e8f0;">
+            ❓ <em>What is this? (A smartphone? A dictionary? A pen?)</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Notice & Discover -->
+    <div class="slide" data-time="2.0 Mins" data-category="Discovery">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">👀 Notice &amp; Discover</div>
+          <div class="slide-subtitle">Compare the simple sentences and the combined sentence | 仔细观察两组句子</div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-action-outline" onclick="toggleReveal('s3Merged', this)">🙈 Hide Merged (隐藏合并)</button>
+          <button class="btn btn-action" onclick="toggleReveal('s3Answers', this)">🙈 Hide Answers (隐藏答案)</button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px; flex: 1;">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="background: #ffffff; padding: 16px 18px; border-radius: 8px; border: 1px solid var(--border-color); border-left: 4px solid #d97706; box-shadow: var(--shadow-sm);">
+            <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 4px;">Sentence Pair 1:</div>
+            <div style="font-size: 1.02rem; margin-bottom: 8px; color: #334155;">
+              I have a <span class="hl-noun">friend</span>. + <strong>He</strong> likes English.
+            </div>
+            <div id="s3Merged1" class="reveal-box show" style="font-size: 1.05rem; color: #0f172a; font-weight: 600; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
+              ➔ I have a <span class="hl-noun">friend</span> <span class="hl-clause"><span class="hl-pronoun">who / that</span> likes English</span>.
+            </div>
+          </div>
+
+          <div style="background: #ffffff; padding: 16px 18px; border-radius: 8px; border: 1px solid var(--border-color); border-left: 4px solid #0284c7; box-shadow: var(--shadow-sm);">
+            <div style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 4px;">Sentence Pair 2:</div>
+            <div style="font-size: 1.02rem; margin-bottom: 8px; color: #334155;">
+              This is a <span class="hl-noun">phone</span>. + <strong>It</strong> takes clear photos.
+            </div>
+            <div id="s3Merged2" class="reveal-box show" style="font-size: 1.05rem; color: #0f172a; font-weight: 600; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
+              ➔ This is a <span class="hl-noun">phone</span> <span class="hl-clause"><span class="hl-pronoun">which / that</span> takes clear photos</span>.
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #ffffff; padding: 16px 20px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;">
+          <div style="font-weight: bold; color: #0f172a; font-size: 0.98rem; margin-bottom: 8px;">
+            🤔 Guiding Questions (思考与归纳):
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem;">
+            <div>
+              <strong>Q1:</strong> What does "who/that likes English" describe?
+              <span class="zh-hint">它修饰前面的哪个人？</span>
+              <div class="reveal-box s3AnswerItem show" style="color: #0284c7; font-weight: 600; margin-top: 2px;">➔ It describes the <u>friend</u>!</div>
+            </div>
+            <div>
+              <strong>Q2:</strong> Is "friend" a <u>person</u> or a <u>thing</u>?
+              <div class="reveal-box s3AnswerItem show" style="color: #d97706; font-weight: 600; margin-top: 2px;">➔ A <u>person</u> (人) ➔ use <strong>who / that</strong></div>
+            </div>
+            <div>
+              <strong>Q3:</strong> Is "phone" a <u>person</u> or a <u>thing</u>?
+              <div class="reveal-box s3AnswerItem show" style="color: #0284c7; font-weight: 600; margin-top: 2px;">➔ A <u>thing</u> (物) ➔ use <strong>which / that</strong></div>
+            </div>
+            <div>
+              <strong>Q4:</strong> What words do "who" and "which" replace?
+              <div class="reveal-box s3AnswerItem show" style="color: #16a34a; font-weight: 600; margin-top: 2px;">➔ They replace <strong>He</strong> and <strong>It</strong>!</div>
+            </div>
+          </div>
+
+          <div id="s3Takeaway" class="reveal-box show" style="background: #ecfdf5; border: 1px solid #a7f3d0; padding: 6px 10px; border-radius: 4px; font-size: 0.8rem; color: #065f46;">
+            ✨ <strong>Takeaway:</strong> 定语从句紧跟在被修饰的名词后，用来修饰限定它！
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: 共同归纳规则 -->
+    <div class="slide" data-time="1.5 Mins" data-category="Rule Formulation">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">📐 The Golden Rules: Summary</div>
+          <div class="slide-subtitle">How to connect sentences | 核心规则与极简结构图</div>
+        </div>
+        <div class="pill-badge">Step 3: Generalization</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px; flex: 1;">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="background: #ffffff; padding: 14px 18px; border-radius: 8px; border: 1px solid var(--border-color); border-left: 5px solid #d97706; box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 1.25rem; font-weight: bold; color: #0f172a;">
+                👤 Person (人) &nbsp;➔&nbsp; <span style="color: #d97706;">who / that</span>
+              </div>
+              <span class="zh-hint">被修饰的名词是指人时，关系代词用 who 或 that</span>
+            </div>
+            <div style="font-size: 2rem;">🧑‍🏫</div>
+          </div>
+
+          <div style="background: #ffffff; padding: 14px 18px; border-radius: 8px; border: 1px solid var(--border-color); border-left: 5px solid #0284c7; box-shadow: var(--shadow-sm); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 1.25rem; font-weight: bold; color: #0f172a;">
+                📦 Thing (物) &nbsp;➔&nbsp; <span style="color: #0284c7;">which / that</span>
+              </div>
+              <span class="zh-hint">被修饰的名词是指物品时，关系代词用 which 或 that</span>
+            </div>
+            <div style="font-size: 2rem;">📚</div>
+          </div>
+
+          <div style="background: #ffffff; padding: 12px 16px; border-radius: 6px; border: 1px dashed #cbd5e1; font-size: 0.88rem; box-shadow: var(--shadow-sm);">
+            <strong>Replacement Function (替代功能):</strong> The relative pronoun replaces 
+            <span style="color: var(--color-error); font-weight: bold;">he / she / it / they</span>.
+            <span class="zh-hint">关系代词替代简单句中的人称代词，并把两个句子平滑连接。</span>
+          </div>
+        </div>
+
+        <div style="background: #ffffff; padding: 18px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: center;">
+          <div style="font-size: 0.95rem; font-weight: bold; color: #0f172a; margin-bottom: 14px; text-align: center;">
+            Sentence Pattern 结构图
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; text-align: center; margin-bottom: 12px;">
+            <span class="hl-noun" style="font-size: 1.05rem;">Noun (名词)</span>
+            <span style="color: #64748b; margin: 0 6px;">+</span>
+            <span class="hl-pronoun" style="font-size: 1.05rem;">who / which / that</span>
+            <span style="color: #64748b; margin: 0 6px;">+</span>
+            <span style="color: #16a34a; font-weight: bold; font-size: 1.05rem;">Verb (动词)</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.88rem;">
+            <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 4px;">
+              • a <span class="hl-noun">student</span> + <span class="hl-pronoun">who/that</span> + likes basketball
+            </div>
+            <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 4px;">
+              • a <span class="hl-noun">book</span> + <span class="hl-pronoun">which/that</span> + is interesting
+            </div>
+          </div>
+
+          <div style="margin-top: 12px; font-size: 0.78rem; color: #64748b; text-align: center;">
+            * 先行词 Antecedent：前面被修饰的名词（认准是“人”还是“物”）
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: 快速全员参与活动 -->
+    <div class="slide" data-time="1.0 Mins" data-category="Quick Check">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">⚡ Rapid-Fire: Show Your Hands!</div>
+          <div class="slide-subtitle">Total Participation Technique | 全员手势快速作答</div>
+        </div>
+        <div>
+          <button class="btn btn-action" onclick="toggleRevealGroup('s5Answer', this)">🙈 Hide Answers (隐藏答案)</button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 18px;">
+        <div style="background: #ffffff; padding: 12px; border-radius: 8px; text-align: center; border: 2px solid #d97706; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.4rem;">✋ 左手 (Left)</div>
+          <div style="font-size: 1.25rem; font-weight: bold; color: #d97706; margin: 2px 0;">WHO</div>
+          <span style="font-size: 0.8rem; color: #64748b;">Person (人)</span>
+        </div>
+
+        <div style="background: #ffffff; padding: 12px; border-radius: 8px; text-align: center; border: 2px solid #0284c7; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.4rem;">✋ 右手 (Right)</div>
+          <div style="font-size: 1.25rem; font-weight: bold; color: #0284c7; margin: 2px 0;">WHICH</div>
+          <span style="font-size: 0.8rem; color: #64748b;">Thing (物)</span>
+        </div>
+
+        <div style="background: #ffffff; padding: 12px; border-radius: 8px; text-align: center; border: 2px solid #9333ea; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.4rem;">🙌 双手 (Both)</div>
+          <div style="font-size: 1.25rem; font-weight: bold; color: #9333ea; margin: 2px 0;">THAT</div>
+          <span style="font-size: 0.8rem; color: #64748b;">Person / Thing (人/物)</span>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
+        <div style="background: #ffffff; padding: 12px 18px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.1rem; color: #0f172a;">
+            1. I know a <span class="hl-noun">girl</span> ________ sings well.
+          </div>
+          <span class="pill-badge reveal-inline s5Answer show" style="background: #fef3c7; color: #b45309;">
+            ✅ who / that (✋ 左手 / 🙌 双手)
+          </span>
+        </div>
+
+        <div style="background: #ffffff; padding: 12px 18px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.1rem; color: #0f172a;">
+            2. This is a <span class="hl-noun">book</span> ________ helps me learn English.
+          </div>
+          <span class="pill-badge reveal-inline s5Answer show" style="background: #e0f2fe; color: #0369a1;">
+            ✅ which / that (✋ 右手 / 🙌 双手)
+          </span>
+        </div>
+
+        <div style="background: #ffffff; padding: 12px 18px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+          <div style="font-size: 1.1rem; color: #0f172a;">
+            3. He is a <span class="hl-noun">teacher</span> ________ is very kind.
+          </div>
+          <span class="pill-badge reveal-inline s5Answer show" style="background: #fef3c7; color: #b45309;">
+            ✅ who / that (✋ 左手 / 🙌 双手)
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Task 2 - 小组句子修理站 -->
+    <div class="slide" data-time="3.5 Mins" data-category="Task 2: Sentence Repair">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">🛠️ Task 2: Group Work - Sentence Repair Shop</div>
+          <div class="slide-subtitle">Collaborate in groups of 3-4 | 句子修理站：四人分工协作合并句子</div>
+        </div>
+        <div class="pill-badge">Group Work (3.5 Mins)</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 12px;">
+        <div style="background: #ffffff; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); border-left: 3px solid #0284c7; font-size: 0.78rem; box-shadow: var(--shadow-sm);">
+          <strong>1. Matcher:</strong> 找出先行词名词
+        </div>
+        <div style="background: #ffffff; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); border-left: 3px solid #d97706; font-size: 0.78rem; box-shadow: var(--shadow-sm);">
+          <strong>2. Connector:</strong> 选 who / which / that
+        </div>
+        <div style="background: #ffffff; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); border-left: 3px solid #16a34a; font-size: 0.78rem; box-shadow: var(--shadow-sm);">
+          <strong>3. Writer:</strong> 写出完整句子
+        </div>
+        <div style="background: #ffffff; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color); border-left: 3px solid #e11d48; font-size: 0.78rem; box-shadow: var(--shadow-sm);">
+          <strong>4. Reporter:</strong> 代表全组汇报展示
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; flex: 1;">
+        <div style="background: #ffffff; padding: 10px 14px; border-radius: 6px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Sentence 1:</div>
+          <div style="font-size: 1rem; color: #0f172a;">
+            I know a <span class="hl-noun">boy</span>. <span style="color:var(--color-error); font-weight: bold;">He</span> plays football well.
+          </div>
+          <div style="font-size: 0.82rem; color: #64748b; margin-top: 2px;">
+            支架：I know a boy <span style="border-bottom: 1.5px dashed #0284c7; padding: 0 20px;"></span> plays football well.
+          </div>
+        </div>
+
+        <div style="background: #ffffff; padding: 10px 14px; border-radius: 6px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Sentence 2:</div>
+          <div style="font-size: 1rem; color: #0f172a;">
+            This is a <span class="hl-noun">book</span>. <span style="color:var(--color-error); font-weight: bold;">It</span> is interesting.
+          </div>
+          <div style="font-size: 0.82rem; color: #64748b; margin-top: 2px;">
+            支架：This is a book <span style="border-bottom: 1.5px dashed #0284c7; padding: 0 20px;"></span> is interesting.
+          </div>
+        </div>
+
+        <div style="background: #ffffff; padding: 10px 14px; border-radius: 6px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+          <div style="font-size: 0.8rem; color: var(--text-muted);">Sentence 3:</div>
+          <div style="font-size: 1rem; color: #0f172a;">
+            We have a <span class="hl-noun">teacher</span>. <span style="color:var(--color-error); font-weight: bold;">She</span> is very patient.
+          </div>
+          <div style="font-size: 0.82rem; color: #64748b; margin-top: 2px;">
+            支架：We have a teacher <span style="border-bottom: 1.5px dashed #0284c7; padding: 0 20px;"></span> is very patient.
+          </div>
+        </div>
+
+        <div>
+          <button class="btn btn-action" onclick="toggleReveal('revealAnswers1', this)">👁️ Hide Group Answers (隐藏参考答案)</button>
+        </div>
+
+        <div id="revealAnswers1" class="reveal-box show" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 10px 16px;">
+          <div style="font-weight: bold; color: #15803d; margin-bottom: 4px;">✅ Reference Answers:</div>
+          <div style="font-size: 0.88rem; line-height: 1.6; color: #0f172a;">
+            1. I know a boy <span class="hl-pronoun">who / that</span> plays football well.<br>
+            2. This is a book <span class="hl-pronoun">which / that</span> is interesting.<br>
+            3. We have a teacher <span class="hl-pronoun">who / that</span> is very patient.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: 全班反馈与纠错 -->
+    <div class="slide" data-time="1.5 Mins" data-category="Feedback &amp; Correction">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">🩺 Doctor's Clinic: Spot the Errors!</div>
+          <div class="slide-subtitle">Common mistakes analysis | 观察三句话：判断对错并说出原因</div>
+        </div>
+        <div>
+          <button class="btn btn-action" onclick="toggleClinicDiagnose(this)">🙈 Hide Diagnosis (隐藏诊断)</button>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; flex: 1;">
+        <div style="background: #ffffff; padding: 14px 18px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+          <div>
+            <div style="font-size: 1.1rem; color: #0f172a;">
+              1. I know a boy <span id="s8Err1" style="font-weight: bold; color: var(--color-error); text-decoration: line-through;">which</span> plays football well.
+              <span id="s8Badge1" class="reveal-inline show" style="color: var(--color-error); font-weight: bold; margin-left: 8px;">❌</span>
+            </div>
+            <span id="s8Hint1" class="zh-hint reveal-box show" style="color: var(--color-error);">
+              ➔ 诊断：boy 是人，不能使用 which 指代！
+            </span>
+          </div>
+          <span id="s8Status1" class="reveal-inline show" style="color: var(--color-error); font-weight: bold;">Misuse of which</span>
+        </div>
+
+        <div style="background: #ffffff; padding: 14px 18px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+          <div>
+            <div style="font-size: 1.1rem; color: #0f172a;">
+              2. This is a book <span id="s8Err2" style="font-weight: bold; color: var(--color-error); text-decoration: line-through;">who</span> is interesting.
+              <span id="s8Badge2" class="reveal-inline show" style="color: var(--color-error); font-weight: bold; margin-left: 8px;">❌</span>
+            </div>
+            <span id="s8Hint2" class="zh-hint reveal-box show" style="color: var(--color-error);">
+              ➔ 诊断：book 是物品，不能使用 who 指代！
+            </span>
+          </div>
+          <span id="s8Status2" class="reveal-inline show" style="color: var(--color-error); font-weight: bold;">Misuse of who</span>
+        </div>
+
+        <div style="background: #ffffff; padding: 14px 18px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+          <div>
+            <div style="font-size: 1.1rem; color: #0f172a;">
+              3. I know a boy <span id="s8Correct3" style="font-weight: bold; color: var(--color-success);">who / that</span> plays football well.
+              <span id="s8Badge3" class="reveal-inline show" style="color: var(--color-success); font-weight: bold; margin-left: 8px;">✅</span>
+            </div>
+            <span id="s8Hint3" class="zh-hint reveal-box show" style="color: var(--color-success);">
+              ➔ 诊断：完全正确！先行词是人，选用 who 或 that。
+            </span>
+          </div>
+          <span id="s8Status3" class="reveal-inline show" style="color: var(--color-success); font-weight: bold;">Correct!</span>
+        </div>
+
+        <div id="revealCorrection" class="reveal-box show" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 10px 16px;">
+          <div style="font-weight: bold; color: #15803d; margin-bottom: 2px;">🔑 Quick Check Rule (一秒避坑法则):</div>
+          <div style="font-size: 0.88rem; color: #0f172a;">
+            先看空格前被修饰的名词是人还是物：<br>
+            • <strong>Person (人)</strong> ➔ <strong>who / that</strong> <br>
+            • <strong>Thing (物)</strong> ➔ <strong>which / that</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Task 3 - 出口检测 Exit Ticket (已删除 Open Challenge 模块) -->
+    <div class="slide" data-time="1.5 Mins" data-category="Task 3: Exit Ticket">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">🎫 Task 3: Exit Ticket</div>
+          <div class="slide-subtitle">Check your understanding before you leave | 堂清检测与评价</div>
+        </div>
+        <div class="pill-badge" style="background: #fef3c7; color: #b45309;">Exit Pass</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 18px; flex: 1;">
+        <!-- 左侧：题目检测区 -->
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="background: #ffffff; padding: 14px 16px; border-radius: 6px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+            <div style="font-size: 1rem; font-weight: 500; color: #0f172a;">
+              1. This is a <strong>teacher</strong> _______ helps me a lot.
+            </div>
+            <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 6px;">
+              A. who &nbsp;&nbsp;&nbsp;&nbsp; B. which
+            </div>
+          </div>
+
+          <div style="background: #ffffff; padding: 14px 16px; border-radius: 6px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+            <div style="font-size: 1rem; font-weight: 500; color: #0f172a;">
+              2. This is a <strong>thing</strong> _______ is useful.
+            </div>
+            <div style="font-size: 0.88rem; color: var(--text-muted); margin-top: 6px;">
+              A. who &nbsp;&nbsp;&nbsp;&nbsp; B. which &nbsp;&nbsp;&nbsp;&nbsp; C. that
+            </div>
+          </div>
+
+          <div>
+            <button class="btn btn-action" onclick="toggleReveal('revealExit', this)">👁️ Hide Answers (隐藏检测答案)</button>
+          </div>
+
+          <div id="revealExit" class="reveal-box show" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 12px 16px;">
+            <div style="font-size: 0.9rem; color: #15803d; font-weight: 600;">
+              <strong>Answers:</strong> 1. <strong>A (who)</strong> &nbsp;|&nbsp; 2. <strong>B &amp; C (which / that)</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧：自评量表 -->
+        <div style="background: #ffffff; padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;">
+          <div style="font-weight: bold; color: #0f172a; font-size: 0.95rem; margin-bottom: 8px;">
+            🌟 Self-Assessment (自评清单):
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px; font-size: 0.82rem;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <span>✅</span>
+              <div>
+                <strong>Identify person or thing</strong>
+                <span class="zh-hint">我能准确判断先行词是人还是物。</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <span>✅</span>
+              <div>
+                <strong>Choose who, which or that</strong>
+                <span class="zh-hint">我能根据先行词选对关系代词。</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <span>✅</span>
+              <div>
+                <strong>Make a relative clause</strong>
+                <span class="zh-hint">我能合并或说出定语从句。</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 10px; border-radius: 4px; font-size: 0.78rem; color: var(--text-muted); text-align: center;">
+            3 checks = Master of Mystery Target! 🏆
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: 课堂总结与课后作业 -->
+    <div class="slide active" data-time="1.0 Mins" data-category="Summary &amp; Homework">
+      <div class="slide-header">
+        <div>
+          <div class="slide-title">📦 Summary &amp; Homework</div>
+          <div class="slide-subtitle">Wrap up and consolidation | 总结与分层任务</div>
+        </div>
+        <div class="pill-badge">Wrap-up (1 Min)</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; flex: 1;">
+        <div style="background: #ffffff; padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;">
+          <div style="font-weight: bold; color: #d97706; font-size: 1.05rem; margin-bottom: 6px;">
+            🎓 Lesson Summary in 3 Sentences
+          </div>
+          
+          <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem;">
+            <div style="background: #f8fafc; padding: 8px 12px; border-radius: 4px; border: 1px solid #e2e8f0;">
+              <strong>1. A relative clause describes a noun.</strong>
+              <span class="zh-hint">定语从句用来详细描述前面的名词。</span>
+            </div>
+            <div style="background: #f8fafc; padding: 8px 12px; border-radius: 4px; border: 1px solid #e2e8f0;">
+              <strong>2. Person ➔ who / that &nbsp;|&nbsp; Thing ➔ which / that</strong>
+              <span class="zh-hint">指人配 who/that，指物配 which/that。</span>
+            </div>
+            <div style="background: #f8fafc; padding: 8px 12px; border-radius: 4px; border: 1px solid #e2e8f0;">
+              <strong>3. The pronoun replaces he, she, or it.</strong>
+              <span class="zh-hint">关系代词替代了原代词，不要重复写 he/she/it。</span>
+            </div>
+          </div>
+
+          <div style="font-size: 0.8rem; color: #16a34a; text-align: center; margin-top: 6px; font-weight: 500;">
+            🎉 Great job! Mission Accomplished!
+          </div>
+        </div>
+
+        <div style="background: #ffffff; padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; justify-content: space-between;">
+          <div style="font-weight: bold; color: #0284c7; font-size: 1.05rem; margin-bottom: 6px;">
+            📝 Tiered Homework (分层课后作业)
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem;">
+            <div style="border-left: 3px solid #16a34a; padding-left: 8px;">
+              <strong>Task 1 (必做 Core):</strong>
+              <div>Complete 5 sentences using who, which, or that.</div>
+              <span class="zh-hint">完成练习单上的5道关系代词填空题。</span>
+            </div>
+
+            <div style="border-left: 3px solid #0284c7; padding-left: 8px;">
+              <strong>Task 2 (必做 Core):</strong>
+              <div>Describe 1 person and 1 thing with relative clauses.</div>
+              <span class="zh-hint">句型：I know a person who... / This is a thing which...</span>
+            </div>
+
+            <div style="border-left: 3px solid #f59e0b; padding-left: 8px;">
+              <strong>Challenge (选做 Optional):</strong>
+              <div>Write 3 sentences introducing your friend or gadget.</div>
+              <span class="zh-hint">使用至少2个定语从句写一段微型人物或物品介绍。</span>
+            </div>
+          </div>
+
+          <div style="font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-top: 6px;">
+            Thank you, class! See you tomorrow! 👋
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- slide-stage 结束 -->
+
+  <!-- 底部简洁控制栏 -->
+  <div class="bottom-bar">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <button class="btn" onclick="prevSlide()">◀ Previous (上一页)</button>
+      <button class="btn" onclick="nextSlide()">Next (下一页) ▶</button>
+      <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 10px;">(快捷键: ← / → 翻页)</span>
+    </div>
+    <div style="font-size: 0.8rem; color: var(--text-muted);">
+      Senior 1 English Demo Lesson (15 Mins)
+    </div>
+  </div>
+
+</div>
+
+<!-- 脚本逻辑：键盘翻页与答案交互 -->
+<script>
+  let currentSlideIndex = 0;
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  const progressBar = document.getElementById('progressBar');
+  const pageIndicator = document.getElementById('pageIndicator');
+  const slideCategory = document.getElementById('slideCategory');
+  const slideTime = document.getElementById('slideTime');
+
+  function updateSlide(index) {
+    if (index < 0 || index >= totalSlides) return;
+    
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === index);
+    });
+
+    currentSlideIndex = index;
+
+    const currentSlide = slides[index];
+    pageIndicator.innerText = `${index + 1} / ${totalSlides}`;
+    slideCategory.innerText = currentSlide.getAttribute('data-category') || '';
+    slideTime.innerText = `⏱️ ${currentSlide.getAttribute('data-time') || ''}`;
+
+    const progressPercent = ((index + 1) / totalSlides) * 100;
+    progressBar.style.width = `${progressPercent}%`;
+  }
+
+  function nextSlide() {
+    if (currentSlideIndex < totalSlides - 1) {
+      updateSlide(currentSlideIndex + 1);
+    }
+  }
+
+  function prevSlide() {
+    if (currentSlideIndex > 0) {
+      updateSlide(currentSlideIndex - 1);
+    }
+  }
+
+  function toggleReveal(id, btn) {
+    if (id === 's3Merged') {
+      const m1 = document.getElementById('s3Merged1');
+      const m2 = document.getElementById('s3Merged2');
+      const isVisible = m1.classList.contains('show');
+      m1.classList.toggle('show', !isVisible);
+      m2.classList.toggle('show', !isVisible);
+      btn.innerText = isVisible ? '✨ 1. Merge Sentences (看合并效果)' : '🙈 Hide Merged (隐藏合并)';
+      return;
+    }
+
+    if (id === 's3Answers') {
+      const items = document.querySelectorAll('.s3AnswerItem');
+      const takeaway = document.getElementById('s3Takeaway');
+      const isVisible = items[0].classList.contains('show');
+      items.forEach(el => el.classList.toggle('show', !isVisible));
+      takeaway.classList.toggle('show', !isVisible);
+      btn.innerText = isVisible ? '💡 2. Reveal Answers (揭晓引导问题)' : '🙈 Hide Answers (隐藏答案)';
+      return;
+    }
+
+    const target = document.getElementById(id);
+    if (!target) return;
+    const isVisible = target.classList.contains('show');
+    target.classList.toggle('show', !isVisible);
+    if (btn) {
+      btn.innerText = isVisible 
+        ? btn.innerText.replace('Hide', 'Show').replace('隐藏', '显示')
+        : btn.innerText.replace('Show', 'Hide').replace('显示', '隐藏');
+    }
+  }
+
+  function toggleRevealGroup(className, btn) {
+    const targets = document.querySelectorAll(`.${className}`);
+    if (!targets.length) return;
+    const isVisible = targets[0].classList.contains('show');
+    targets.forEach(t => t.classList.toggle('show', !isVisible));
+    btn.innerText = isVisible ? '✋ Check Answers (揭晓手势与答案)' : '🙈 Hide Answers (隐藏答案)';
+  }
+
+  function toggleClinicDiagnose(btn) {
+    const isDiagnosed = document.getElementById('s8Badge1').classList.contains('show');
+    const show = !isDiagnosed;
+
+    const err1 = document.getElementById('s8Err1');
+    const err2 = document.getElementById('s8Err2');
+    const corr3 = document.getElementById('s8Correct3');
+
+    err1.style.color = show ? 'var(--color-error)' : '';
+    err1.style.textDecoration = show ? 'line-through' : 'none';
+
+    err2.style.color = show ? 'var(--color-error)' : '';
+    err2.style.textDecoration = show ? 'line-through' : 'none';
+
+    corr3.style.color = show ? 'var(--color-success)' : '';
+
+    ['s8Badge1', 's8Badge2', 's8Badge3', 's8Hint1', 's8Hint2', 's8Hint3', 's8Status1', 's8Status2', 's8Status3', 'revealCorrection'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('show', show);
+    });
+
+    btn.innerText = show ? '🙈 Hide Diagnosis (隐藏诊断)' : '🩺 Diagnose Sentences (公布诊断结果)';
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      prevSlide();
+    }
+  });
+
+  updateSlide(0);
+</script>
+
+
+</body></html>
